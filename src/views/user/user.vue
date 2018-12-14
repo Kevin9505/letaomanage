@@ -27,6 +27,7 @@
           prop="isDelete"
           label="状态"
         >
+        <span>{{ userList.isDelete | changeStatus() }}</span>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -54,12 +55,15 @@ export default {
   methods: {
     handleChangeStatus (row) {
       // console.log(row)
-      // if()
-      changeUserStatus({id: row.id, isDelete: row.isDelete}).then(res => {})
+      // if (row.isDelete === 1) {
+      //   console.log(11)
+      //   this.isDelete = 0
+      // }
+      changeUserStatus({id: row.id, isDelete: this.isDelete}).then(res => {
+      })
     },
     init () {
       userListData({ page: this.page, pageSize: this.pageSize }).then(res => {
-        // console.log(res.rows)
         this.userList = res.rows
       })
     }
@@ -69,10 +73,9 @@ export default {
   },
   filters: {
     changeStatus (isDelete) {
-      console.log(isDelete)
-      if (isDelete === 0) {
+      if (isDelete === '0') {
         return '已启用'
-      } else if (isDelete === 1) {
+      } else if (isDelete === '1') {
         return '未启用'
       }
     }

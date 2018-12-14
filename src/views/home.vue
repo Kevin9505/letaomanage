@@ -27,12 +27,12 @@
             <i class="el-icon-menu"></i>
             <span slot="title">用户管理</span>
           </el-menu-item>
-          <el-submenu index="2">
+          <el-submenu index="">
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>分类管理</span>
             </template>
-            <el-menu-item index="2-1">
+            <el-menu-item index="firstcate">
               <i class="el-icon-menu"></i>
               <span slot="title">一级分类管理</span>
             </el-menu-item>
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     handleOpen (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     },
     handleClose () {}
   }

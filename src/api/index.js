@@ -40,3 +40,11 @@ export const changeUserStatus = (params) => {
       return results.data
     })
 }
+
+// 获取一级分类数据
+export const getFirstCateData = (params) => {
+  return axios.get(`/category/queryTopCategoryPaging`, {params})
+    .then(results => {
+      return results.data
+    })
+}
