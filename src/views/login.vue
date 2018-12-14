@@ -26,6 +26,7 @@
           <el-input
             placeholder="密码"
             v-model="userInfo.password"
+            type="password"
             class="input-with-select"
           >
             <template slot="prepend"><span class="fa fa-key"></span></template>
@@ -47,8 +48,8 @@ export default {
   data () {
     return {
       userInfo: {
-        username: '',
-        password: ''
+        username: 'root',
+        password: '123456'
       },
       rules: {
         username: [
@@ -73,7 +74,7 @@ export default {
         } else {
           login(this.userInfo).then(res => {
             if (res.success) {
-
+              this.$router.push({path: '/home'})
             }
           })
         }
