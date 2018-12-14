@@ -64,7 +64,6 @@ export default {
   methods: {
     submitLoginForm (formname) {
       this.$refs[formname].validate(valid => {
-        console.log(valid)
         if (!valid) {
           this.$message({
             message: '错了呢，检查是否输入有空...',
@@ -106,15 +105,6 @@ export default {
       border-radius: 50%;
       transform: translateX(-50%);
     }
-    // .el-form-item {
-    //   margin-bottom: 0px;
-    //   .el-form-item__content {
-    //     margin-left: 0px;
-    .el-input {
-      // margin-bottom: 20px;
-    }
-    //   }
-    // }
     .el-button {
       width: 100%;
     }

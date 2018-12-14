@@ -2,20 +2,40 @@
 import axios from 'axios'
 // 设置基准路径
 axios.defaults.baseURL = 'http://127.0.0.1:3000'
-
-// 添加请求拦截器
-// axios.interceptors.request.use(function (config) {
-//   // 在发送请求之前做些什么
-//   console.log(config)
-//   if (config.url) {}
-//   return config
-// }, function (error) {
-//   // 对请求错误做些什么
-//   return Promise.reject(error)
+// axios.create({
+//   baseURL: 'http://127.0.0.1:3000',
+//   headers: {'Content-Type': 'application/json;charset=utf-8'},
+//   withCredentials: true
 // })
+// 允许axios传递cookie数据，因为默认情况下，axios并不会传递cookie
+axios.defaults.withCredentials = true
 
+// 判断用户是否登录
+export const isLogin = () => {
+  return axios.get(`/employee/checkRootLogin`)
+    .then(results => {
+      return results.data
+    })
+}
+// 用户登录接口
 export const login = (params) => {
   return axios.post(`/employee/employeeLogin`, params)
+    .then(results => {
+      return results.data
+    })
+}
+
+// 用户管理接口
+export const userListData = (params) => {
+  return axios.get(`/user/queryUser`, {params})
+    .then(results => {
+      return results.data
+    })
+}
+
+// 更改用户状态
+export const changeUserStatus = (params) => {
+  return axios.post(`/user/updateUser`, params)
     .then(results => {
       return results.data
     })

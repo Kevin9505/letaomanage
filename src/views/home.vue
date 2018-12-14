@@ -3,7 +3,7 @@
     <el-container>
       <el-aside
         class="aside"
-        width="200px"
+        width="auto"
       >
         <div class="user-info">
           <img
@@ -21,8 +21,9 @@
           text-color="#fff"
           active-text-color="#ffd04b"
           :collapse="isCollapse"
+          :router="true"
         >
-          <el-menu-item index="1">
+          <el-menu-item index="user">
             <i class="el-icon-menu"></i>
             <span slot="title">用户管理</span>
           </el-menu-item>
@@ -48,10 +49,12 @@
       </el-aside>
       <el-container>
         <el-header>
-          <el-button icon="fa fa-align-justify"></el-button>
+          <el-button v-model="isCollapse" @click="isCollapse=!isCollapse" icon="fa fa-align-justify"></el-button>
           <el-button icon="">退出</el-button>
         </el-header>
-        <el-main>Main</el-main>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -64,7 +67,9 @@ export default {
     }
   },
   methods: {
-    handleOpen () {},
+    handleOpen (key, keyPath) {
+      console.log(key, keyPath)
+    },
     handleClose () {}
   }
 }
@@ -72,10 +77,14 @@ export default {
 <style lang="scss" scoped>
 .home {
   height: 100%;
+  .el-menu:not(.el-menu--collapse) {
+    width: 200px;
+    min-height: 400px;
+  }
   .el-container {
     height: 100%;
     .aside {
-      width: 200px;
+      // width: 200px;
       background-color: #2f4050;
       .user-info {
         display: flex;

@@ -10,17 +10,21 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome-sass/assets/stylesheets/_font-awesome.scss'
 import '@/assets/index.scss'
 
+// import { isLogin } from '@/api'
 // 设置导航守卫
 // router.beforeEach((to, from, next) => {
-//   console.log(to)
-//   // 判断是否存在 token 或是 访问的是 登录页
-//   if (to.path === '/') {
-//     next()
-//   } else {
-//     next({
-//       path: '/home'
-//     })
-//   }
+//   // console.log(to)
+//   isLogin().then(res => {
+//     // console.log(res)
+//     if (res.success || to.path === '/login') {
+//       next()
+//     } else {
+//       next({
+//         path: '/login'
+//       })
+//     }
+//   })
+//   next()
 // })
 Vue.config.productionTip = false
 Vue.use(ElementUI)
