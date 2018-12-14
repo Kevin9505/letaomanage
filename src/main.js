@@ -3,8 +3,15 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+// 导入 elementui 框架
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+// 引用字体图标
+import 'font-awesome-sass/assets/stylesheets/_font-awesome.scss'
+import '@/assets/index.scss'
 
 Vue.config.productionTip = false
+Vue.use(ElementUI)
 
 /* eslint-disable no-new */
 new Vue({
