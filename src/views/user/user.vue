@@ -24,10 +24,10 @@
         >
         </el-table-column>
         <el-table-column
-          prop="isDelete"
           label="状态"
+          prop="isDelete"
         >
-        <span>{{ userList.isDelete | changeStatus() }}</span>
+        <!-- <template><span>{{ userList.isDelete | changeStatus() }}</span></template> -->
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -55,12 +55,30 @@ export default {
   methods: {
     handleChangeStatus (row) {
       // console.log(row)
-      // if (row.isDelete === 1) {
-      //   console.log(11)
-      //   this.isDelete = 0
-      // }
-      changeUserStatus({id: row.id, isDelete: this.isDelete}).then(res => {
-      })
+      if (row.isDelete === 1) {
+        row.isDelete = 0
+        changeUserStatus({id: row.id, isDelete: row.isDelete}).then(res => {
+          console.log(res)
+          if (res.success) {
+            this.$message({
+              message: '启用成功...',
+              type: 'success'
+            })
+            this.init()
+          }
+        })
+      } else if (row.isDelete === 0) {
+        row.isDelete = 1
+        changeUserStatus({id: row.id, isDelete: row.isDelete}).then(res => {
+          if (res.success) {
+            this.$message({
+              message: '禁用成功...',
+              type: 'error'
+            })
+            this.init()
+          }
+        })
+      }
     },
     init () {
       userListData({ page: this.page, pageSize: this.pageSize }).then(res => {
@@ -73,9 +91,9 @@ export default {
   },
   filters: {
     changeStatus (isDelete) {
-      if (isDelete === '0') {
+      if (isDelete === 0) {
         return '已启用'
-      } else if (isDelete === '1') {
+      } else if (isDelete === 1) {
         return '未启用'
       }
     }
