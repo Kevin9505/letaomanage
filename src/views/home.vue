@@ -15,8 +15,6 @@
         <el-menu
           default-active="2"
           class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
           background-color="#2f4050"
           text-color="#fff"
           active-text-color="#ffd04b"
@@ -50,7 +48,7 @@
       <el-container>
         <el-header>
           <el-button v-model="isCollapse" @click="isCollapse=!isCollapse" icon="fa fa-align-justify"></el-button>
-          <el-button icon="">退出</el-button>
+          <el-button icon="" @click="handleLogout">退出</el-button>
         </el-header>
         <el-main>
           <router-view></router-view>
@@ -60,6 +58,7 @@
   </div>
 </template>
 <script>
+import { logout } from '@/api'
 export default {
   data () {
     return {
@@ -67,10 +66,34 @@ export default {
     }
   },
   methods: {
-    handleOpen (key, keyPath) {
-      // console.log(key, keyPath)
-    },
-    handleClose () {}
+    handleLogout () {
+      this.$confirm('此操作将退出登录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        logout().then(res => {
+          if (res.success) {
+            this.$message({
+              type: 'success',
+              message: '成功退出!'
+            })
+            this.$router.push({path: '/login'})
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.message
+            })
+            return false
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    }
   }
 }
 </script>

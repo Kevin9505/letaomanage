@@ -25,6 +25,14 @@ export const login = (params) => {
     })
 }
 
+// 退出登录接口
+export const logout = () => {
+  return axios.get(`/employee/employeeLogout`)
+    .then(results => {
+      return results.data
+    })
+}
+
 // 用户管理接口
 export const userListData = (params) => {
   return axios.get(`/user/queryUser`, {params})
