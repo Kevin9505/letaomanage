@@ -5,6 +5,7 @@ import Home from '@/views/home.vue'
 import User from '@/views/user/user.vue'
 import FirstCate from '@/views/cate/firstcate.vue'
 import Secondcate from '@/views/cate/secondcate.vue'
+import Productlist from '@/views/product/productlist.vue'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
           path: '/secondcate',
           name: 'Secondcate',
           component: Secondcate
+        },
+        {
+          path: '/productlist',
+          name: 'Productlist',
+          component: Productlist
         }
       ]
     }

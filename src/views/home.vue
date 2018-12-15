@@ -39,7 +39,7 @@
               <span slot="title">二级分类管理</span>
             </el-menu-item>
           </el-submenu>
-          <el-menu-item index="3">
+          <el-menu-item index="productlist">
             <i class="el-icon-goods"></i>
             <span slot="title">商品管理</span>
           </el-menu-item>

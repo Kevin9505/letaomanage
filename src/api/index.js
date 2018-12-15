@@ -80,3 +80,11 @@ export const getSecondCateData = (params) => {
       return results.data
     })
 }
+
+// 获取商品列表数据
+export const getProductData = (params) => {
+  return axios.get(`/product/queryProductDetailList`, {params})
+    .then(results => {
+      return results.data
+    })
+}
