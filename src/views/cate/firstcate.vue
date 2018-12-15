@@ -1,7 +1,10 @@
 <template>
   <div class="first-cate">
     <el-card class="box-card">
-      <el-button type="primary" @click="addCateDialogFormVisible=!addCateDialogFormVisible">添加分类</el-button>
+      <el-button
+        type="primary"
+        @click="addCateDialogFormVisible=!addCateDialogFormVisible"
+      >添加分类</el-button>
       <template>
         <el-table
           :data="firstCateData"
@@ -25,6 +28,14 @@
             width="auto"
           >
           </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                @click="showEditFirstCateDialog(scope.row)"
+              >编辑</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </template>
       <!-- 添加分类弹窗 -->
@@ -32,8 +43,12 @@
         title="添加分类"
         :visible.sync="addCateDialogFormVisible"
       >
-        <el-form :model="addFirstCate"
-        :label-width="formLabelWidth" :rules="rules" ref="addFirstCate">
+        <el-form
+          :model="addFirstCate"
+          :label-width="formLabelWidth"
+          :rules="rules"
+          ref="addFirstCate"
+        >
           <el-form-item
             label="分类名称"
             prop="categoryName"
@@ -56,11 +71,62 @@
           >确 定</el-button>
         </div>
       </el-dialog>
+      <!-- 编辑分类弹窗 -->
+      <el-dialog
+        title="编辑分类"
+        :visible.sync="editCateDialogFormVisible"
+      >
+        <el-form
+          :model="editFirstCate"
+          :label-width="formLabelWidth"
+          :rules="rules"
+          ref="editFirstCate"
+        >
+          <el-form-item
+            label="分类名称"
+            prop="categoryName"
+          >
+            <el-input
+              v-model="editFirstCate.categoryName"
+              autocomplete="off"
+              placeholder="请输入分类名称"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="是否启动"
+            :label-width="formLabelWidth"
+          >
+            <el-select
+              v-model="editFirstCate.isDelete"
+              placeholder="0 启用 - 1 禁用"
+            >
+              <el-option
+                label="启用"
+                value="0"
+              ></el-option>
+              <el-option
+                label="禁用"
+                value="1"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="editCateDialogFormVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="handleEditFirstCate('editFirstCate')"
+          >更 新</el-button>
+        </div>
+      </el-dialog>
     </el-card>
   </div>
 </template>
 <script>
-import { getFirstCateData, addFirstCate } from '@/api'
+import { getFirstCateData, addFirstCate, editFirstCate } from '@/api'
 export default {
   data () {
     return {
@@ -71,10 +137,12 @@ export default {
       formLabelWidth: '80px',
       // 控制添加弹框是否显示
       addCateDialogFormVisible: false,
+      editCateDialogFormVisible: false,
       // 添加分类的数据
       addFirstCate: {
         categoryName: ''
       },
+      editFirstCate: {},
       // 验证规则
       rules: {
         categoryName: [
@@ -86,13 +154,15 @@ export default {
   methods: {
     // 拿数据渲染页面
     init () {
-      getFirstCateData({ page: this.page, pageSize: this.pageSize }).then(res => {
-        this.firstCateData = res.rows
-      })
+      getFirstCateData({ page: this.page, pageSize: this.pageSize }).then(
+        res => {
+          this.firstCateData = res.rows
+        }
+      )
     },
     // 确认添加分类
     addFirstCateSubmit (formname) {
-      this.$refs[formname].validate((valid) => {
+      this.$refs[formname].validate(valid => {
         if (!valid) {
           this.$message({
             message: '错了呢,输入不能为空哦...',
@@ -128,7 +198,21 @@ export default {
       })
       this.addCateDialogFormVisible = false
       this.$refs[formname].resetFields()
-    }
+    },
+    // 编辑一级分类
+    handleEditFirstCate () {
+      editFirstCate().then(res => {
+        // console.log(res)
+      })
+    },
+    // 显示编辑一级分类弹框
+    showEditFirstCateDialog (row) {
+      console.log(row)
+      this.editFirstCate = row
+      this.editCateDialogFormVisible = true
+    },
+    // 取消更新
+    handleCanceEdit () {}
   },
   mounted () {
     this.init()
