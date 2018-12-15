@@ -81,6 +81,14 @@ export const getSecondCateData = (params) => {
     })
 }
 
+// 添加二级分类 -- 添加品牌
+export const addSecondBrandCate = (params) => {
+  return axios.post(`/category/addSecondCategory`, params)
+    .then(results => {
+      return results.data
+    })
+}
+
 // 获取商品列表数据
 export const getProductData = (params) => {
   return axios.get(`/product/queryProductDetailList`, {params})

@@ -34,7 +34,7 @@
             width="auto"
           >
             <template slot-scope="scope">
-              <img
+              <img v-show="scope.row.brandLogo"
                 :src="'http://127.0.0.1:3000/' + scope.row.brandLogo"
                 alt=""
               >
@@ -82,7 +82,7 @@
             <template>
               <el-select
                 placeholder="请选择"
-                v-model="selectedCate"
+                v-model="addSecondCate.categoryId"
               >
                 <el-option
                   v-for="item in firstCateData"
@@ -96,12 +96,12 @@
           </el-form-item>
           <el-form-item
             label="品牌名称"
-            prop="selecredBrandName"
+            prop="brandName"
           >
             <el-input
               :clearable="true"
               placeholder="请输入品牌名称"
-              v-model="selecredBrandName"
+              v-model="addSecondCate.brandName"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -110,13 +110,14 @@
           >
             <el-upload
               class="upload-demo"
-              action="http://127.0.0.1:3000/public/upload"
+              action="http://localhost:3000/category/addSecondCategoryPic"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               :on-success="handleSuccess"
               :before-upload="handleUploadBefore"
               :file-list="fileList"
               list-type="picture"
+              enctype="multipart/form-data"
             >
               <el-button
                 size="small"
@@ -144,7 +145,7 @@
   </div>
 </template>
 <script>
-import { getSecondCateData, getFirstCateData } from '@/api'
+import { getSecondCateData, getFirstCateData, addSecondBrandCate } from '@/api'
 export default {
   data () {
     return {
@@ -152,10 +153,13 @@ export default {
       secondCateData: [],
       // 一级分类
       firstCateData: [],
-      addSecondCate: {},
-      // 选中的分类
-      selectedCate: '',
-      selecredBrandName: '',
+      // 添加品牌数据
+      addSecondCate: {
+        categoryId: '',
+        brandName: '',
+        brandLogo: '',
+        hot: 1
+      },
       fileList: [],
       formLabelWidth: '100px',
       addBrandDialogFormVisible: false,
@@ -165,8 +169,11 @@ export default {
         pageSize: 4
       },
       total: 1,
+      // logo地址
+      picAddr: {},
+      // 验证规则
       rules: {
-        selecredBrandName: [
+        brandName: [
           { required: true, message: '请输入品牌名称', trigger: 'blur' }
         ]
       }
@@ -196,19 +203,55 @@ export default {
     // 显示添加品牌弹框
     showAddSecondCateDialog () {
       this.addBrandDialogFormVisible = true
-      getFirstCateData({ page: 1, pageSize: 10 }).then(res => {
-        console.log(res)
+      getFirstCateData({ page: 1, pageSize: 30 }).then(res => {
+        // console.log(res)
         this.firstCateData = res.rows
       })
     },
     // 图片预览
-    handlePreview () {},
+    handlePreview (file) {},
     // 移除图片
-    handleRemove () {},
+    handleRemove (file, fileList) {},
     // 上传成功
-    handleSuccess () {},
+    handleSuccess (response, file, fileList) {
+      console.log(fileList)
+    },
     // 上传之前
-    handleUploadBefore () {}
+    handleUploadBefore (file) {
+      if (file.size > 512000) {
+        this.$message({
+          message: '乖乖!!!图片不能大于500kb呢...',
+          type: 'error'
+        })
+        return false
+      }
+    },
+    // 取消添加品牌
+    handleCanceAdd (formname) {
+      this.$refs[formname].resetFields()
+      this.addBrandDialogFormVisible = false
+    },
+    // 确认添加品牌
+    addFirstCateSubmit (formname) {
+      console.log(this.addSecondCate)
+      this.$refs[formname].validate(valid => {
+        if (!valid) {
+          this.$message({
+            message: '乖乖!!!输入不许为空哦...',
+            type: 'error'
+          })
+          return false
+        } else {
+          addSecondBrandCate(this.addSecondCate).then(res => {
+            if (res.success) {
+              this.addBrandDialogFormVisible = false
+              this.$refs[formname].resetFields()
+              this.init()
+            }
+          })
+        }
+      })
+    }
   },
   mounted () {
     this.init()
