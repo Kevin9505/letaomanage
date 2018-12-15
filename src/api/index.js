@@ -72,3 +72,11 @@ export const editFirstCate = (params) => {
       return results.data
     })
 }
+
+// 获取二级分类数据
+export const getSecondCateData = (params) => {
+  return axios.get(`/category/querySecondCategoryPaging`, {params})
+    .then(results => {
+      return results.data
+    })
+}

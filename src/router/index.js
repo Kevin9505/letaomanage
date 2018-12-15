@@ -4,6 +4,7 @@ import Login from '@/views/login.vue'
 import Home from '@/views/home.vue'
 import User from '@/views/user/user.vue'
 import FirstCate from '@/views/cate/firstcate.vue'
+import Secondcate from '@/views/cate/secondcate.vue'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
           path: '/firstcate',
           name: 'FirstCate',
           component: FirstCate
+        },
+        {
+          path: '/secondcate',
+          name: 'Secondcate',
+          component: Secondcate
         }
       ]
     }

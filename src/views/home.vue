@@ -34,7 +34,7 @@
               <i class="el-icon-edit"></i>
               <span slot="title">一级分类管理</span>
             </el-menu-item>
-            <el-menu-item index="2-2">
+            <el-menu-item index="secondcate">
               <i class="el-icon-star-on"></i>
               <span slot="title">二级分类管理</span>
             </el-menu-item>
