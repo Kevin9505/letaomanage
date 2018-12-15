@@ -25,17 +25,18 @@
         </el-table-column>
         <el-table-column
           label="状态"
-          prop="isDelete"
         >
-        <!-- <template><span>{{ userList.isDelete | changeStatus() }}</span></template> -->
+        <template slot-scope="scope">
+          <span>{{ scope.row.isDelete | changeStatus() }}</span>
+        </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              type="danger"
+              :type="scope.row.isDelete===1?'success':'danger'"
               @click="handleChangeStatus(scope.row)"
-            >禁用</el-button>
+            >{{scope.row.isDelete===1?'启用':'禁用'}}</el-button>
           </template>
         </el-table-column>
       </el-table>
