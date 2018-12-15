@@ -37,6 +37,17 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+          style="margin-top:25px;"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="params.page"
+          :page-sizes="[2, 4, 6, 8]"
+          :page-size="params.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        >
+        </el-pagination>
       </template>
       <!-- 添加分类弹窗 -->
       <el-dialog
@@ -132,8 +143,11 @@ export default {
     return {
       // 渲染分类数据
       firstCateData: [],
-      page: 1,
-      pageSize: 10,
+      params: {
+        page: 1,
+        pageSize: 2
+      },
+      total: 1,
       formLabelWidth: '80px',
       // 控制添加弹框是否显示
       addCateDialogFormVisible: false,
@@ -154,11 +168,24 @@ export default {
   methods: {
     // 拿数据渲染页面
     init () {
-      getFirstCateData({ page: this.page, pageSize: this.pageSize }).then(
+      getFirstCateData(this.params).then(
         res => {
           this.firstCateData = res.rows
+          this.total = res.total
         }
       )
+    },
+    // 每页条数
+    handleSizeChange (val) {
+      // console.log(val)
+      this.params.pageSize = val
+      this.init()
+    },
+    // 下一页
+    handleCurrentChange (val) {
+      // console.log(val)
+      this.params.page = val
+      this.init()
     },
     // 确认添加分类
     addFirstCateSubmit (formname) {
