@@ -1,46 +1,60 @@
 <template>
   <div class="user">
-    <template>
-      <el-table
-        :data="userList"
-        border
-        style="width: 100%"
-      >
-        <el-table-column
-          type="selection"
-          width="55"
+    <el-card class="box-card">
+      <template>
+        <el-table
+          :data="userList"
+          border
+          style="width: 100%"
         >
-        </el-table-column>
-        <el-table-column
-          prop="username"
-          label="用户名"
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="mobile"
-          label="电话"
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          label="状态"
-        >
-        <template slot-scope="scope">
-          <span>{{ scope.row.isDelete | changeStatus() }}</span>
-        </template>
-        </el-table-column>
-        <el-table-column label="操作">
+          <el-table-column
+            type="selection"
+            width="55"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="username"
+            label="用户名"
+            width="180"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="电话"
+            width="180"
+          >
+          </el-table-column>
+          <el-table-column
+            label="状态"
+          >
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              :type="scope.row.isDelete===1?'success':'danger'"
-              @click="handleChangeStatus(scope.row)"
-            >{{scope.row.isDelete===1?'启用':'禁用'}}</el-button>
+            <span>{{ scope.row.isDelete | changeStatus() }}</span>
           </template>
-        </el-table-column>
-      </el-table>
-    </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                :type="scope.row.isDelete===1?'success':'danger'"
+                @click="handleChangeStatus(scope.row)"
+              >{{scope.row.isDelete===1?'启用':'禁用'}}</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+      <!-- 分页功能 -->
+      <el-pagination
+        style="margin-top:25px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="params.page"
+        :page-sizes="[4, 8, 12, 16]"
+        :page-size="params.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
+    </el-card>
   </div>
 </template>
 <script>
@@ -49,11 +63,15 @@ export default {
   data () {
     return {
       userList: [],
-      page: 1,
-      pageSize: 5
+      params: {
+        page: 1,
+        pageSize: 5
+      },
+      total: 1
     }
   },
   methods: {
+    // 启用和禁用用户状态
     handleChangeStatus (row) {
       // console.log(row)
       if (row.isDelete === 1) {
@@ -81,10 +99,22 @@ export default {
         })
       }
     },
+    // 数据渲染
     init () {
-      userListData({ page: this.page, pageSize: this.pageSize }).then(res => {
+      userListData(this.params).then(res => {
         this.userList = res.rows
+        this.total = res.total
       })
+    },
+    // 一页显示条数
+    handleSizeChange (val) {
+      this.params.pageSize = val
+      this.init()
+    },
+    // 下一页
+    handleCurrentChange (val) {
+      this.params.pageSize = val
+      this.init()
     }
   },
   mounted () {
