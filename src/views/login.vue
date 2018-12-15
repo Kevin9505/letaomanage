@@ -73,7 +73,19 @@ export default {
         } else {
           login(this.userInfo).then(res => {
             if (res.success) {
-              this.$router.push({path: '/home'})
+              let instance = this.$message({
+                message: '登录成功...',
+                type: 'success'
+              })
+              setTimeout(() => {
+                instance.close()
+                this.$router.push({path: '/home'})
+              }, 1000)
+            } else {
+              this.$message({
+                message: res.message,
+                type: 'error'
+              })
             }
           })
         }
