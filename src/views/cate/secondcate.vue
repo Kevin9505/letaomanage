@@ -140,57 +140,6 @@
           >确 定</el-button>
         </div>
       </el-dialog>
-      <!-- 编辑分类弹窗 -->
-      <!-- <el-dialog
-        title="编辑分类"
-        :visible.sync="editCateDialogFormVisible"
-      >
-        <el-form
-          :model="editFirstCate"
-          :label-width="formLabelWidth"
-          :rules="rules"
-          ref="editFirstCate"
-        >
-          <el-form-item
-            label="分类名称"
-            prop="categoryName"
-          >
-            <el-input
-              v-model="editFirstCate.categoryName"
-              autocomplete="off"
-              placeholder="请输入分类名称"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label="是否启动"
-            :label-width="formLabelWidth"
-          >
-            <el-select
-              v-model="editFirstCate.isDelete"
-              placeholder="0 启用 - 1 禁用"
-            >
-              <el-option
-                label="启用"
-                value="0"
-              ></el-option>
-              <el-option
-                label="禁用"
-                value="1"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button @click="editCateDialogFormVisible = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="handleEditFirstCate('editFirstCate')"
-          >更 新</el-button>
-        </div>
-      </el-dialog> -->
     </el-card>
   </div>
 </template>
