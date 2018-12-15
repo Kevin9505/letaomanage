@@ -35,9 +35,9 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                :type="scope.row.isDelete===1?'success':'danger'"
+                :type="scope.row.isDelete===0?'success':'danger'"
                 @click="handleChangeStatus(scope.row)"
-              >{{scope.row.isDelete===1?'启用':'禁用'}}</el-button>
+              >{{scope.row.isDelete===0?'启用':'禁用'}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -74,8 +74,8 @@ export default {
     // 启用和禁用用户状态
     handleChangeStatus (row) {
       // console.log(row)
-      if (row.isDelete === 1) {
-        row.isDelete = 0
+      if (row.isDelete === 0) {
+        row.isDelete = 1
         changeUserStatus({id: row.id, isDelete: row.isDelete}).then(res => {
           console.log(res)
           if (res.success) {
@@ -86,8 +86,8 @@ export default {
             this.init()
           }
         })
-      } else if (row.isDelete === 0) {
-        row.isDelete = 1
+      } else if (row.isDelete === 1) {
+        row.isDelete = 0
         changeUserStatus({id: row.id, isDelete: row.isDelete}).then(res => {
           if (res.success) {
             this.$message({
@@ -122,9 +122,9 @@ export default {
   },
   filters: {
     changeStatus (isDelete) {
-      if (isDelete === 0) {
+      if (isDelete === 1) {
         return '已启用'
-      } else if (isDelete === 1) {
+      } else if (isDelete === 0) {
         return '未启用'
       }
     }

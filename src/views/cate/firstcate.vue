@@ -104,20 +104,19 @@
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="是否启动"
-            :label-width="formLabelWidth"
+            label="启用/禁用"
           >
             <el-select
               v-model="editFirstCate.isDelete"
-              placeholder="0 启用 - 1 禁用"
+              placeholder="1 启用 - 0 禁用"
             >
               <el-option
                 label="启用"
-                value="0"
+                :value="1"
               ></el-option>
               <el-option
                 label="禁用"
-                value="1"
+                :value="0"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -156,7 +155,11 @@ export default {
       addFirstCate: {
         categoryName: ''
       },
-      editFirstCate: {},
+      editFirstCate: {
+        id: '',
+        isDelete: '',
+        categoryName: ''
+      },
       // 验证规则
       rules: {
         categoryName: [
@@ -227,19 +230,29 @@ export default {
       this.$refs[formname].resetFields()
     },
     // 编辑一级分类
-    handleEditFirstCate () {
-      editFirstCate().then(res => {
-        // console.log(res)
+    handleEditFirstCate (formname) {
+      this.$refs[formname].validate(valid => {
+        if (!valid) {
+          this.$message({
+            message: '错了呢,不能输入空值哦...',
+            type: 'error'
+          })
+          return false
+        } else {
+          editFirstCate(this.editFirstCate).then(res => {
+            this.editCateDialogFormVisible = false
+            this.$refs[formname].resetFields()
+            this.init()
+          })
+        }
       })
     },
     // 显示编辑一级分类弹框
     showEditFirstCateDialog (row) {
-      console.log(row)
+      // this.editFirstCate.id = row.id
       this.editFirstCate = row
       this.editCateDialogFormVisible = true
-    },
-    // 取消更新
-    handleCanceEdit () {}
+    }
   },
   mounted () {
     this.init()

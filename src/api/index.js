@@ -67,7 +67,7 @@ export const addFirstCate = (params) => {
 
 // 编辑更新一级分类
 export const editFirstCate = (params) => {
-  return axios.post(`/category/addTopCategory`, params)
+  return axios.post(`/category/updateTopCategory`, params)
     .then(results => {
       return results.data
     })
