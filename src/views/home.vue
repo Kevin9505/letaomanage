@@ -22,25 +22,25 @@
           :router="true"
         >
           <el-menu-item index="user">
-            <i class="el-icon-menu"></i>
+            <i class="el-icon-info"></i>
             <span slot="title">用户管理</span>
           </el-menu-item>
           <el-submenu index="">
             <template slot="title">
-              <i class="el-icon-menu"></i>
+              <i class="el-icon-setting"></i>
               <span>分类管理</span>
             </template>
             <el-menu-item index="firstcate">
-              <i class="el-icon-menu"></i>
+              <i class="el-icon-edit"></i>
               <span slot="title">一级分类管理</span>
             </el-menu-item>
             <el-menu-item index="2-2">
-              <i class="el-icon-menu"></i>
+              <i class="el-icon-star-on"></i>
               <span slot="title">二级分类管理</span>
             </el-menu-item>
           </el-submenu>
           <el-menu-item index="3">
-            <i class="el-icon-menu"></i>
+            <i class="el-icon-goods"></i>
             <span slot="title">商品管理</span>
           </el-menu-item>
         </el-menu>
