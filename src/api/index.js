@@ -48,3 +48,11 @@ export const getFirstCateData = (params) => {
       return results.data
     })
 }
+
+// 添加一级分类
+export const addFirstCate = (params) => {
+  return axios.post(`/category/addTopCategory`, params)
+    .then(results => {
+      return results.data
+    })
+}
