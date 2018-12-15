@@ -33,7 +33,9 @@
             label="品牌logo"
             width="auto"
           >
-          <!-- <template><img :src="'http://127.0.0.1:3000/'+secondCateData.brandLogo" alt=""></template> -->
+          <template slot-scope="scope">
+            <img :src="'http://127.0.0.1:3000/' + scope.row.brandLogo" alt="">
+          </template>
           </el-table-column>
           <el-table-column
             prop="categoryName"
