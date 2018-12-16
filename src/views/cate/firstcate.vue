@@ -244,7 +244,7 @@ export default {
             console.log(res)
             this.editCateDialogFormVisible = false
             this.$refs[formname].resetFields()
-            this.init()
+            // this.init()
           })
         }
       })

@@ -139,7 +139,7 @@
           <el-button @click="handleCanceAdd('addSecondCate')">取 消</el-button>
           <el-button
             type="primary"
-            @click="addFirstCateSubmit('addSecondCate')"
+            @click="addSecondCateSubmit('addSecondCate')"
           >确 定</el-button>
         </div>
       </el-dialog>
@@ -160,6 +160,81 @@
           <el-button
             type="primary"
             @click="showPicDialogFormVisible=!showPicDialogFormVisible"
+          >确 定</el-button>
+        </div>
+      </el-dialog>
+      <!-- 编辑品牌弹窗 -->
+      <el-dialog
+        title="添加品牌"
+        :visible.sync="editBrandDialogFormVisible"
+      >
+        <el-form
+          :model="editSecondCate"
+          :label-width="formLabelWidth"
+          :rules="rules"
+          ref="editSecondCate"
+        >
+          <el-form-item label="分类名称">
+            <template>
+              <el-select
+                placeholder="请选择"
+                v-model="editSecondCate.categoryId"
+              >
+                <el-option
+                  v-for="item in firstCateData"
+                  :key="item.id"
+                  :label="item.categoryName"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </template>
+          </el-form-item>
+          <el-form-item
+            label="品牌名称"
+            prop="brandName"
+          >
+            <el-input
+              :clearable="true"
+              placeholder="请输入品牌名称"
+              v-model="editSecondCate.brandName"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="上传图片"
+            prop="name"
+          >
+            <el-upload
+              class="upload-demo"
+              action="http://127.0.0.1:3000/category/addSecondCategoryPic"
+              :on-preview="handleEditPreview"
+              :on-remove="handleEditRemove"
+              :on-success="handleEditSuccess"
+              :before-upload="handleEditUploadBefore"
+              :file-list="fileList"
+              list-type="picture"
+              :with-credentials='true'
+              name='pic1'
+            >
+              <el-button
+                size="small"
+                type="primary"
+              >点击上传</el-button>
+              <div
+                slot="tip"
+                class="el-upload__tip"
+              >只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="handleCanceEditCate('editSecondCate')">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="editSecondCateSubmit('editSecondCate')"
           >确 定</el-button>
         </div>
       </el-dialog>
@@ -191,14 +266,16 @@ export default {
       addBrandDialogFormVisible: false,
       // 控制预览图片弹框是否显示
       showPicDialogFormVisible: false,
+      // 控制编辑更新品牌弹框是否显示
+      editBrandDialogFormVisible: false,
       // 获取二级分类数据
       params: {
         page: 1,
         pageSize: 4
       },
       total: 1,
-      // logo地址
-      picAddr: {},
+      // 编辑更新品牌数据
+      editSecondCate: {},
       // 验证规则
       rules: {
         brandName: [
@@ -217,7 +294,15 @@ export default {
       })
     },
     // 显示编辑品牌的弹框
-    showEditScondCateDialog () {},
+    showEditScondCateDialog (row) {
+      console.log(row)
+      this.editSecondCate = row
+      getFirstCateData({ page: 1, pageSize: 30 }).then(res => {
+        // console.log(res)
+        this.firstCateData = res.rows
+      })
+      this.editBrandDialogFormVisible = true
+    },
     // 每页显示条数
     handleSizeChange (val) {
       this.params.pageSize = val
@@ -268,7 +353,7 @@ export default {
       this.addBrandDialogFormVisible = false
     },
     // 确认添加品牌
-    addFirstCateSubmit (formname) {
+    addSecondCateSubmit (formname) {
       this.$refs[formname].validate(valid => {
         if (!valid) {
           this.$message({
@@ -288,7 +373,21 @@ export default {
           })
         }
       })
-    }
+    },
+    // 编辑更新
+    editSecondCateSubmit (formname) {},
+    // 取消编辑更新
+    handleCanceEditCate (formname) {},
+    // 编辑品牌图片显示
+    handleEditPreview () {},
+    // 编辑品牌移除图片
+    handleEditRemove () {},
+    // 编辑品牌图片上传成功
+    handleEditSuccess (response) {
+      console.log(response)
+    },
+    // 编辑图片上传之前
+    handleEditUploadBefore () {}
   },
   mounted () {
     this.init()
