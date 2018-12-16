@@ -104,3 +104,11 @@ export const addProductList = (params) => {
       return results.data
     })
 }
+
+// 编辑更新商品
+export const updateProduct = (params) => {
+  return axios.post(`/product/updateProduct`, params)
+    .then(results => {
+      return results.data
+    })
+}

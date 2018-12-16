@@ -57,7 +57,7 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="80"
+            width="160"
           >
             <template slot-scope="scope">
               <el-button
@@ -65,6 +65,10 @@
                 type="danger"
                 @click="showSoldOutDialog(scope.row)"
               >{{scope.row.statu===0?'上架':'下架'}}</el-button>
+              <el-button
+                size="mini"
+                @click="showUpdateProduct(scope.row)"
+              >编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -222,11 +226,136 @@
           >确 定</el-button>
         </div>
       </el-dialog>
+      <!-- 添加品牌弹窗 -->
+      <el-dialog
+        title="编辑更新商品"
+        :visible.sync="showUpdateProductDialogFormVisible"
+      >
+        <el-form
+          :model="updateProduct"
+          :label-width="formLabelWidth"
+          :rules="rules"
+          ref="updateProduct"
+        >
+          <el-form-item label="品牌名称">
+            <template>
+              <el-select
+                placeholder="请选择"
+                v-model="updateProduct.brandId"
+              >
+                <el-option
+                  v-for="item in secondCateData"
+                  :key="item.id"
+                  :label="item.brandName"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </template>
+          </el-form-item>
+          <el-form-item
+            label="产品名称"
+            prop="proName"
+          >
+            <el-input
+              :clearable="true"
+              placeholder="请输入产品名称"
+              v-model="updateProduct.proName"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="产品描述"
+            prop="proDesc"
+          >
+            <el-input
+              :clearable="true"
+              placeholder="请输入产品描述"
+              v-model="updateProduct.proDesc"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="产品数量"
+            prop="num"
+          >
+            <el-input
+              :clearable="true"
+              placeholder="请输入产品数量"
+              v-model="updateProduct.num"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="产品尺码"
+            prop="size"
+          >
+            <el-input
+              :clearable="true"
+              placeholder="请输入产品尺码,如20-39"
+              v-model="updateProduct.size"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="商品原价"
+            prop="oldPrice"
+          >
+            <el-input
+              :clearable="true"
+              placeholder="请输入商品原价"
+              v-model="updateProduct.oldPrice"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="商品折扣价"
+            prop="price"
+          >
+            <el-input
+              :clearable="true"
+              placeholder="请输入商品折扣价"
+              v-model="updateProduct.price"
+            ></el-input>
+          </el-form-item>
+          <!-- <el-form-item
+            label="上传图片"
+            prop="name"
+          >
+            <el-upload
+              class="upload-demo"
+              action="http://127.0.0.1:3000/product/addProductPic"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :on-success="handleSuccess"
+              :before-upload="handleUploadBefore"
+              :file-list="fileList"
+              list-type="picture"
+              :with-credentials='true'
+              name='pic1'
+            >
+              <el-button
+                size="small"
+                type="primary"
+              >点击上传</el-button>
+              <div
+                slot="tip"
+                class="el-upload__tip"
+              >只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+          </el-form-item> -->
+        </el-form>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="handleCanceUpdate('updateProduct')">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="UpdateProductSubmit('updateProduct')"
+          >确 定</el-button>
+        </div>
+      </el-dialog>
     </el-card>
   </div>
 </template>
 <script>
-import { getProductData, getSecondCateData, addProductList } from '@/api'
+import { getProductData, getSecondCateData, addProductList, updateProduct } from '@/api'
 export default {
   data () {
     return {
@@ -243,6 +372,8 @@ export default {
       addProductialogFormVisible: false,
       // 控制图片预览弹框是否显示
       showPicDialogFormVisible: false,
+      // 控制编辑商品的弹框是否显示
+      showUpdateProductDialogFormVisible: false,
       formLabelWidth: '120px',
       // 图片预览路径
       showPicUrl: '',
@@ -258,6 +389,8 @@ export default {
         brandId: '',
         pic: []
       },
+      // 编辑更新商品的数据
+      updateProduct: {},
       // 品牌的数据
       secondCateData: [],
       // 验证规则
@@ -326,6 +459,8 @@ export default {
     // 图片上传成功
     handleSuccess (response, file, fileList) {
       // console.log(response)
+      response['productId'] = 6
+      // console.log(response)
       this.addProduct.pic.push(response)
       // console.log(this.addProduct.pic)
     },
@@ -377,7 +512,53 @@ export default {
       })
     },
     // 取消添加商品
-    handleCanceAdd () {}
+    handleCanceAdd (formname) {
+      this.addProductialogFormVisible = false
+      this.$refs[formname].resetFields()
+    },
+    // 点击编辑按钮
+    showUpdateProduct (row) {
+      this.showUpdateProductDialogFormVisible = true
+      // console.log(row)
+      getSecondCateData({ page: 1, pageSize: 30 }).then(res => {
+        // console.log(res)
+        this.secondCateData = res.rows
+      })
+      this.updateProduct = row
+    },
+    // 取消编辑更新
+    handleCanceUpdate (formname) {
+      this.showUpdateProductDialogFormVisible = false
+      this.$refs[formname].resetFields()
+    },
+    UpdateProductSubmit (formname) {
+      this.$refs[formname].validate(valid => {
+        if (!valid) {
+          this.$message({
+            message: '哎呀!!!出错了,快去检查啦...',
+            type: 'error'
+          })
+          return false
+        } else {
+          updateProduct(this.updateProduct).then(res => {
+            if (res.success) {
+              this.showUpdateProductDialogFormVisible = false
+              this.$refs[formname].resetFields()
+              this.$message({
+                message: '真棒!!!更新成功啦....',
+                type: 'success'
+              })
+              this.init()
+            } else {
+              this.$message({
+                message: '哎呀!!!出错了...',
+                type: 'error'
+              })
+            }
+          })
+        }
+      })
+    }
   },
   mounted () {
     this.init()

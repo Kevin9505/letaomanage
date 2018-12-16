@@ -143,6 +143,26 @@
           >确 定</el-button>
         </div>
       </el-dialog>
+      <!-- 预览图片弹框 -->
+      <el-dialog
+        title="图片预览"
+        :visible.sync="showPicDialogFormVisible"
+      >
+        <img
+          :src="'http://127.0.0.1:3000'+showPicUrl"
+          alt=""
+        >
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="showPicDialogFormVisible=!showPicDialogFormVisible">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="showPicDialogFormVisible=!showPicDialogFormVisible"
+          >确 定</el-button>
+        </div>
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -156,6 +176,8 @@ export default {
       secondCateData: [],
       // 一级分类
       firstCateData: [],
+      // 预览图片展示路径
+      showPicUrl: '',
       // 添加品牌数据
       addSecondCate: {
         categoryId: '',
@@ -165,7 +187,10 @@ export default {
       },
       fileList: [],
       formLabelWidth: '100px',
+      // 控制添加品牌弹框是否显示
       addBrandDialogFormVisible: false,
+      // 控制预览图片弹框是否显示
+      showPicDialogFormVisible: false,
       // 获取二级分类数据
       params: {
         page: 1,
@@ -212,12 +237,20 @@ export default {
       })
     },
     // 图片预览
-    handlePreview (file) {},
+    handlePreview (file) {
+      this.showPicDialogFormVisible = true
+      this.showPicUrl = file.response.picAddr
+    },
     // 移除图片
-    handleRemove (file, fileList) {},
+    handleRemove (file, fileList) {
+      if (!file.response) {
+        return false
+      }
+      this.addSecondCate.brandLogo = ''
+    },
     // 上传成功
     handleSuccess (response, file, fileList) {
-      console.log(fileList)
+      this.addSecondCate.brandLogo = response.picAddr
     },
     // 上传之前
     handleUploadBefore (file) {
@@ -236,7 +269,6 @@ export default {
     },
     // 确认添加品牌
     addFirstCateSubmit (formname) {
-      console.log(this.addSecondCate)
       this.$refs[formname].validate(valid => {
         if (!valid) {
           this.$message({
@@ -246,6 +278,8 @@ export default {
           return false
         } else {
           addSecondBrandCate(this.addSecondCate).then(res => {
+            // console.log(this.addSecondCate)
+            // console.log(res)
             if (res.success) {
               this.addBrandDialogFormVisible = false
               this.$refs[formname].resetFields()
@@ -254,14 +288,10 @@ export default {
           })
         }
       })
-    },
-    // 获取cookie
-    getCookie () {
     }
   },
   mounted () {
     this.init()
-    this.getCookie()
   }
 }
 </script>
