@@ -72,6 +72,7 @@ export default {
           return false
         } else {
           login(this.userInfo).then(res => {
+            console.log(res)
             if (res.success) {
               let instance = this.$message({
                 message: '登录成功...',

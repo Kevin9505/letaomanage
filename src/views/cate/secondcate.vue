@@ -34,7 +34,8 @@
             width="auto"
           >
             <template slot-scope="scope">
-              <img v-show="scope.row.brandLogo"
+              <img
+                v-show="scope.row.brandLogo"
                 :src="'http://127.0.0.1:3000/' + scope.row.brandLogo"
                 alt=""
               >
@@ -110,14 +111,15 @@
           >
             <el-upload
               class="upload-demo"
-              action="http://localhost:3000/category/addSecondCategoryPic"
+              action="http://127.0.0.1:3000/category/addSecondCategoryPic"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               :on-success="handleSuccess"
               :before-upload="handleUploadBefore"
               :file-list="fileList"
               list-type="picture"
-              enctype="multipart/form-data"
+              :with-credentials='true'
+              name='pic1'
             >
               <el-button
                 size="small"
@@ -149,6 +151,7 @@ import { getSecondCateData, getFirstCateData, addSecondBrandCate } from '@/api'
 export default {
   data () {
     return {
+      isok: true,
       // 二级分类获取
       secondCateData: [],
       // 一级分类
@@ -251,10 +254,14 @@ export default {
           })
         }
       })
+    },
+    // 获取cookie
+    getCookie () {
     }
   },
   mounted () {
     this.init()
+    this.getCookie()
   }
 }
 </script>

@@ -1,7 +1,7 @@
 // 导入axios模块
 import axios from 'axios'
 // 设置基准路径
-axios.defaults.baseURL = 'http://127.0.0.1:3000'
+axios.defaults.baseURL = 'http://localhost:3000'
 // axios.create({
 //   baseURL: 'http://127.0.0.1:3000',
 //   headers: {'Content-Type': 'application/json;charset=utf-8'},
@@ -92,6 +92,14 @@ export const addSecondBrandCate = (params) => {
 // 获取商品列表数据
 export const getProductData = (params) => {
   return axios.get(`/product/queryProductDetailList`, {params})
+    .then(results => {
+      return results.data
+    })
+}
+
+// 添加商品
+export const addProductList = (params) => {
+  return axios.post(`/product/addProduct`, params)
     .then(results => {
       return results.data
     })

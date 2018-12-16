@@ -55,7 +55,10 @@
               <span>{{scope.row.statu===0?'已下架':'已上架商品'}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="80">
+          <el-table-column
+            label="操作"
+            width="80"
+          >
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -170,13 +173,15 @@
           >
             <el-upload
               class="upload-demo"
-              action="http://127.0.0.1:3000/public/upload"
+              action="http://127.0.0.1:3000/product/addProductPic"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               :on-success="handleSuccess"
               :before-upload="handleUploadBefore"
               :file-list="fileList"
               list-type="picture"
+              :with-credentials='true'
+              name='pic1'
             >
               <el-button
                 size="small"
@@ -193,10 +198,27 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="handleCanceAdd('addSecondCate')">取 消</el-button>
+          <el-button @click="handleCanceAdd('addProduct')">取 消</el-button>
           <el-button
             type="primary"
-            @click="addProductSubmit('addSecondCate')"
+            @click="addProductSubmit('addProduct')"
+          >确 定</el-button>
+        </div>
+      </el-dialog>
+      <!-- 图片预览弹框 -->
+      <el-dialog
+        title="图片预览"
+        :visible.sync="showPicDialogFormVisible"
+      >
+        <img v-if="showPicUrl" :src="'http://127.0.0.1:3000'+showPicUrl" alt="">
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="showPicDialogFormVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="showPicDialogFormVisible = false"
           >确 定</el-button>
         </div>
       </el-dialog>
@@ -204,7 +226,7 @@
   </div>
 </template>
 <script>
-import { getProductData, getSecondCateData } from '@/api'
+import { getProductData, getSecondCateData, addProductList } from '@/api'
 export default {
   data () {
     return {
@@ -217,11 +239,13 @@ export default {
       // 商品列表数据
       productList: [],
       fileList: [],
-      // 选中的品牌
-      selecredBrandName: '',
       // 控制弹框是否显示
       addProductialogFormVisible: false,
+      // 控制图片预览弹框是否显示
+      showPicDialogFormVisible: false,
       formLabelWidth: '120px',
+      // 图片预览路径
+      showPicUrl: '',
       // 添加商品的数据
       addProduct: {
         proName: '',
@@ -229,9 +253,10 @@ export default {
         price: '',
         proDesc: '',
         size: '',
-        statu: '',
+        statu: 1,
         num: '',
-        brandId: ''
+        brandId: '',
+        pic: []
       },
       // 品牌的数据
       secondCateData: [],
@@ -252,12 +277,8 @@ export default {
         size: [
           { required: true, message: '请输入产品尺码,如20-39', trigger: 'blur' }
         ],
-        statu: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' }
-        ],
-        num: [
-          { required: true, message: '请输入产品数量', trigger: 'blur' }
-        ]
+        statu: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+        num: [{ required: true, message: '请输入产品数量', trigger: 'blur' }]
       }
     }
   },
@@ -283,23 +304,78 @@ export default {
       this.init()
     },
     // 图片预览
-    handlePreview () {},
+    handlePreview (file) {
+      this.showPicDialogFormVisible = true
+      this.showPicUrl = file.response.picAddr
+    },
     // 移除图片
-    handleRemove () {},
+    handleRemove (file, fileList) {
+      // console.log(file)
+      // console.log(fileList)
+      // console.log(this.addProduct.pic)
+      if (!file.response) {
+        return false
+      }
+      const index = this.addProduct.pic.findIndex(value => {
+        // console.log(value)
+        return value.picAddr.indexOf(file.response.picAddr) !== -1
+      })
+      // console.log(index)
+      this.addProduct.pic.splice(index, 1)
+    },
     // 图片上传成功
-    handleSuccess () {},
+    handleSuccess (response, file, fileList) {
+      // console.log(response)
+      this.addProduct.pic.push(response)
+      // console.log(this.addProduct.pic)
+    },
     // 上传图片之前
-    handleUploadBefore () {},
+    handleUploadBefore (file) {
+      if (file.size > 500 * 1024) {
+        this.$message({
+          message: '乖乖!!!图片不能大于500kb呢...',
+          type: 'error'
+        })
+        return false
+      }
+    },
     // 添加商品按钮
     showAddProductDialog () {
       this.addProductialogFormVisible = true
-      getSecondCateData({page: 1, pageSize: 10}).then(res => {
-        console.log(res)
+      getSecondCateData({ page: 1, pageSize: 30 }).then(res => {
+        // console.log(res)
         this.secondCateData = res.rows
       })
     },
     // 确认添加商品
-    addProductSubmit () {},
+    addProductSubmit (formname) {
+      this.$refs[formname].validate(valid => {
+        if (!valid) {
+          this.$message({
+            message: '乖乖!!!输入不能为空呢...',
+            type: 'error'
+          })
+          return false
+        } else {
+          addProductList(this.addProduct).then(res => {
+            if (res.success) {
+              this.addProductialogFormVisible = false
+              this.$refs[formname].resetFields()
+              this.$message({
+                message: '真棒!!!成功添加商品啦,开心....',
+                type: 'success'
+              })
+              this.init()
+            } else {
+              this.$message({
+                message: '哎呀!!!出错了,快检查下啦....',
+                type: 'error'
+              })
+            }
+          })
+        }
+      })
+    },
     // 取消添加商品
     handleCanceAdd () {}
   },
@@ -309,9 +385,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.product-list{
-  .box-card{
-    .el-form-item{
+.product-list {
+  .box-card {
+    .el-form-item {
       margin-bottom: 20px;
     }
   }

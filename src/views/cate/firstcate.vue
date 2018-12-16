@@ -240,6 +240,8 @@ export default {
           return false
         } else {
           editFirstCate(this.editFirstCate).then(res => {
+            console.log(this.editFirstCate)
+            console.log(res)
             this.editCateDialogFormVisible = false
             this.$refs[formname].resetFields()
             this.init()
